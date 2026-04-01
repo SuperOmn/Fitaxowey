@@ -1,6 +1,7 @@
 * Fitaxowey
 Joint project. Learning Containers and Docker-
 * Opening Vi
-* Practice Branching [/]
-** TODO Pull repo
+* Practice Branching [1/2]
+** DONE Pull repo
+CLOSED: [2026-03-31 Tue 21:16]
 ** TODO Create a test 1 branch
