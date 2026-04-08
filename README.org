@@ -1,7 +1,22 @@
 * Fitaxowey
 Joint project. Learning Containers and Docker-
 * Opening Vi
-* Practice Branching [1/2]
 ** DONE Pull repo
 CLOSED: [2026-03-31 Tue 21:16]
 ** TODO Create a test 1 branch
+=======
+* Practice Branching [2/2]
+ Practice Branch Creating a branch is done as follows
+ #+begin_src bash
+git branch -M {branch_name}
+ #+end_src
+
+ You can switch to that branch by checking it out
+ #+begin_src bash
+git checkout {branch_name}
+ #+end_src
+** DONE Pull repo
+CLOSED: [2026-03-31 Tue 21:16]
+** DONE Create a test 1 branch
+CLOSED: [2026-03-31 Tue 21:28]
+
