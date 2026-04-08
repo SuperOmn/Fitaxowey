@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frank And Lonnie Chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --jet-black:    #223843;
+      --platinum:     #eff1f3;
+      --dust-grey:    #dbd3d8;
+      --desert-sand:  #d8b4a0;
+      --burnt-peach:  #d77a61;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--jet-black);
+      color: var(--dust-grey);
+      line-height: 1.75;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--platinum);
+      border-bottom: 2px solid var(--burnt-peach);
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.03em;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--burnt-peach);
+      margin-top: 2.25rem;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--desert-sand);
+      margin-top: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--platinum);
+      margin-top: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    h5 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--desert-sand);
+      margin-top: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      margin-bottom: 0.6rem;
+      color: var(--dust-grey);
+    }
+
+    ul, ol {
+      padding-left: 1.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    li {
+      margin-bottom: 0.2rem;
+      color: var(--dust-grey);
+    }
+
+    a {
+      color: var(--burnt-peach);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--desert-sand);
+      text-decoration: underline;
+    }
+
+    code {
+      font-family: 'Menlo', 'Consolas', monospace;
+      background: rgba(0,0,0,0.25);
+      color: var(--desert-sand);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.88em;
+    }
+
+    .section {
+      border-left: 3px solid var(--burnt-peach);
+      padding-left: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .note-block {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(215,122,97,0.25);
+      border-left: 4px solid var(--burnt-peach);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .note-block h3 {
+      margin-top: 0;
+    }
+
+    .phase {
+      background: rgba(0,0,0,0.15);
+      border: 1px solid rgba(216,180,160,0.2);
+      border-radius: 4px;
+      padding: 0.8rem 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .phase h5 {
+      margin-top: 0;
+    }
+
+    .project-card {
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(216,180,160,0.2);
+      border-radius: 5px;
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .project-card h3 {
+      margin-top: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--burnt-peach);
+      color: var(--jet-black);
+      font-size: 0.75rem;
+      font-family: 'Menlo', monospace;
+      font-weight: 700;
+      padding: 0.15em 0.5em;
+      border-radius: 3px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      color: var(--desert-sand);
+      opacity: 0.7;
+      margin-bottom: 1rem;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(216,180,160,0.2);
+      margin: 2rem 0;
+    }
+
+    i.fa, i.fas, i.far, i.fab, i.fa-solid, i.fa-brands, i.fa-regular {
+      margin-right: 0.45em;
+      opacity: 0.85;
+      font-size: 0.9em;
+    }
+    h1 i { font-size: 1em; color: var(--burnt-peach); }
+    h2 i { color: var(--burnt-peach); }
+    h3 i { color: var(--desert-sand); }
+    h4 i { color: var(--platinum); opacity: 0.7; }
+    h5 i { color: var(--desert-sand); opacity: 0.8; }
+    li i  { color: var(--desert-sand); opacity: 0.75; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1><i class="fa-solid fa-comments"></i>Frank &amp; Lonnie Chat</h1>
+
+  <!-- Meet Times -->
+  <div class="section">
+    <h2><i class="fa-solid fa-calendar-days"></i>Meet Times</h2>
+    <p>For async / sync learning</p>
+    <p><strong>Tuesday</strong> — 19:00–22:00</p>
+  </div>
+
+  <!-- Frank Goals -->
+  <div class="section">
+    <h2><i class="fa-solid fa-user"></i>Frank's Goals</h2>
+
+    <h3><i class="fa-solid fa-terminal"></i>Master Linux Shell Commands</h3>
+
+    <h4><i class="fa-solid fa-keyboard"></i>Learn a Terminal-Based Editor</h4>
+    <p>Nano is fine to start, but <strong>Vim</strong> is strongly recommended — far more widely used, with a massive plugin ecosystem.<br>
+    Start here: <a href="https://www.vim-hero.com" target="_blank">vim-hero.com</a></p>
+
+    <h3><i class="fa-solid fa-shield-halved"></i>Learn Kali Linux</h3>
+
+    <h3><i class="fa-solid fa-brain"></i>Improve Prompt Engineering</h3>
+    <p>Consider pivoting to a CLI-based AI editor like <a href="https://opencode.ai" target="_blank">opencode</a>.</p>
+
+    <h3><i class="fa-solid fa-microchip"></i>Raspberry Pi Mastery</h3>
+  </div>
+
+  <!-- Lonnie Goals -->
+  <div class="section">
+    <h2><i class="fa-solid fa-user"></i>Lonnie's Goals</h2>
+    <ul>
+      <li>Deepen data science and data engineering knowledge</li>
+      <li>Learn machine learning</li>
+      <li>Expand knowledge of AI tools</li>
+      <li>Build deeper technical foundations</li>
+      <li>Learn automation
+        <ul>
+          <li><i class="fa-solid fa-gears"></i><a href="https://n8n.io" target="_blank">n8n</a> — workflow automation platform</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Joint Goals -->
+  <div class="section">
+    <h2><i class="fa-solid fa-handshake"></i>Joint Goals</h2>
+
+    <h3><i class="fa-solid fa-code-branch"></i>Learn Git + GitHub Workflow &amp; Commands</h3>
+    <p><code>git add</code>, <code>git push</code>, branching, PRs</p>
+    <p><em>Note: GitHub over GitLab — more community and job signal.</em></p>
+
+    <h3><i class="fa-solid fa-chart-line"></i>Understand Trends in Data</h3>
+
+    <h3><i class="fa-solid fa-database"></i>Database Management (SQL)</h3>
+    <p>CRUD fundamentals, schema design, upgrading older databases.</p>
+
+    <h3><i class="fa-brands fa-docker"></i>Learn Containerization (Docker)</h3>
+
+    <h3><i class="fa-solid fa-briefcase"></i>Provide Enterprise Value</h3>
+
+    <h3><i class="fa-solid fa-file-lines"></i>Build Out Résumés</h3>
+  </div>
+
+  <hr />
+
+  <!-- Project Ideas -->
+  <div class="section">
+    <h2><i class="fa-solid fa-lightbulb"></i>Project Ideas</h2>
+
+    <h3><i class="fa-solid fa-map"></i>Learning Approach</h3>
+
+    <h4>Bias Toward Asking AI "How?"</h4>
+    <p>Don't just blatantly ask for the answer. Attempt first, hit a wall, then ask AI to explain the <em>mechanism</em>.</p>
+
+    <h4>Build from Roadmap</h4>
+
+    <h4>Requirements</h4>
+    <ul>
+      <li>Only use Git in the terminal</li>
+    </ul>
+  </div>
+
+  <!-- Project 1 -->
+  <div class="project-card">
+    <h3><i class="fa-brands fa-docker"></i>1. Docker + SQL Project</h3>
+    <p>2019 SQL environment hosted on Docker, pulling football data from AWS. Developed using Git + GitHub. Public repo.</p>
+
+    <h4><i class="fa-solid fa-graduation-cap"></i>Learning Goals</h4>
+    <ul>
+      <li>Docker containers</li>
+      <li>AWS APIs</li>
+      <li>DB management</li>
+      <li>Sports betting transition (revenue potential?)</li>
+    </ul>
+  </div>
+
+  <!-- Agent Notes -->
+  <div class="note-block">
+    <h3><i class="fa-solid fa-robot"></i>Agent Notes <span class="meta" style="font-weight:normal; font-size:0.85rem;">[2026-03-29]</span></h3>
+
+    <h4><i class="fa-solid fa-circle-info"></i>On the Project</h4>
+    <p>The Docker + SQL football data project is the right anchor — it touches nearly every joint goal in one real context.</p>
+    <p>Suggested layer order:</p>
+    <ol>
+      <li>Docker + SQL environment with dummy data</li>
+      <li>Git workflow solid on a real repo</li>
+      <li>AWS connection + real football data</li>
+      <li>CRUD queries, schema iteration</li>
+      <li>Document as you go</li>
+    </ol>
+
+    <h4><i class="fa-solid fa-circle-info"></i>On the Sports Betting Pivot</h4>
+    <p>No urgency. It's a valid horizon — once the technical foundation is solid, the data and infrastructure transfers directly. Flag it, don't chase it yet.</p>
+
+    <h4><i class="fa-solid fa-circle-info"></i>On "Bias Toward Asking AI How"</h4>
+    <p>Good discipline. The failure mode: using AI as a shortcut instead of a teacher.<br>
+    <strong>Rule:</strong> attempt first, hit a wall, then ask AI to explain the <em>mechanism</em> — not just hand you the answer.</p>
+
+    <h4><i class="fa-solid fa-clock-rotate-left"></i>Parking Lot</h4>
+    <ul>
+      <li><strong>Host a model locally</strong> — good idea, premature now. Revisit after Docker/SQL is stable.</li>
+      <li><strong>Frank's Pi + Kali angle</strong> — could fold in later (e.g., Pi as Docker host, or API recon work).</li>
+    </ul>
+
+    <h4><i class="fa-solid fa-road"></i>Roadmap</h4>
+
+    <div class="phase">
+      <h5><i class="fa-solid fa-code-branch"></i>Phase 1 — Git + GitHub Foundation</h5>
+      <p>Before touching any infrastructure, get version control solid.</p>
+      <ul>
+        <li>Create a public repo, practice branching, committing, PRs — terminal only</li>
+        <li>Docs: <a href="https://git-scm.com/doc" target="_blank">git-scm.com/doc</a></li>
+        <li>Docs: <a href="https://docs.github.com/en/get-started" target="_blank">docs.github.com/en/get-started</a></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h5><i class="fa-brands fa-docker"></i>Phase 2 — Docker Fundamentals</h5>
+      <p>Learn containers in isolation before adding a database.</p>
+      <ul>
+        <li>Run basic containers, understand images, volumes, networking</li>
+        <li>Docs: <a href="https://docs.docker.com/get-started/" target="_blank">docs.docker.com/get-started</a></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h5><i class="fa-solid fa-database"></i>Phase 3 — SQL Basics</h5>
+      <p>Learn CRUD and schema design with a local DB (PostgreSQL recommended).</p>
+      <ul>
+        <li>Use dummy football data to practice — no real data yet</li>
+        <li>Docs: <a href="https://www.postgresql.org/docs/current/" target="_blank">postgresql.org/docs/current</a></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h5><i class="fa-solid fa-link"></i>Phase 4 — Docker + SQL Together</h5>
+      <p>Run a PostgreSQL instance inside Docker. Connect to it, run queries. This is where the project environment actually takes shape.</p>
+    </div>
+
+    <div class="phase">
+      <h5><i class="fa-brands fa-aws"></i>Phase 5 — AWS Data Ingestion</h5>
+      <p>Find a football dataset, pull it in, load it into your Dockerized DB.</p>
+      <ul>
+        <li>AWS Open Data Registry: <a href="https://registry.opendata.aws/" target="_blank">registry.opendata.aws</a></li>
+        <li>Research required: find the specific dataset (sport, year, format)</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h5><i class="fa-solid fa-rotate"></i>Phase 6 — Iterate</h5>
+      <p>Query real data, build out schema, document everything in the repo. Sports betting pivot lives here if you want it.</p>
+    </div>
+
+    <h4><i class="fa-solid fa-circle-question"></i>Open Research Questions</h4>
+    <ul>
+      <li>Which specific AWS football dataset are you targeting?</li>
+      <li>PostgreSQL confirmed, or a different SQL flavor?</li>
+    </ul>
+  </div>
+
+  <!-- Project 2 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-server"></i>2. Host a Model Locally</h3>
+    <p>Run a local LLM to assist with coding. Flagged as premature — revisit after Docker/SQL is stable.</p>
+  </div>
+
+  <!-- Project 3 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-chart-bar"></i>3. Security Log Analysis Dashboard <span class="badge">Best Crossover</span></h3>
+    <p>Collect real system/network logs (from Frank's Pi or a VM), store in SQL, query and visualize anomalies.</p>
+    <p><strong>Covers:</strong> Linux, SQL, data analysis, threat detection patterns.</p>
+  </div>
+
+  <!-- Project 4 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-network-wired"></i>4. Raspberry Pi Network Monitor</h3>
+    <p>Pi sits on the network, captures traffic (Wireshark/tcpdump). Lonnie analyzes the data — packet counts, anomalies, top talkers.</p>
+    <p><strong>Covers:</strong> Kali/Linux, networking fundamentals, data analysis, visualization.</p>
+  </div>
+
+  <!-- Project 5 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-bug-slash"></i>5. Threat Intelligence Aggregator</h3>
+    <p>Pull from public OSINT threat feeds (IPs, domains, hashes), store in a DB, analyze trends over time.</p>
+    <p><strong>Covers:</strong> APIs, SQL, data pipelines, real security context.</p>
+  </div>
+
+  <!-- Project 6 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-key"></i>6. Breached Password Dataset Analysis</h3>
+    <p>Use public breach data (HaveIBeenPwned datasets), load into SQL, run statistical analysis — pattern frequency, length distribution, common structures.</p>
+    <p><strong>Covers:</strong> SQL, data analysis, security awareness. No infrastructure needed.</p>
+  </div>
+
+  <!-- Project 7 -->
+  <div class="project-card">
+    <h3><i class="fa-solid fa-flag"></i>7. CTF Progress Tracker</h3>
+    <p>Work through CTF challenges together, log findings into a structured DB, track skills over time by category.</p>
+    <p><strong>Covers:</strong> Git workflow, SQL, cybersecurity fundamentals, light data analysis.</p>
+  </div>
+
+</div>
+</body>
+</html>
