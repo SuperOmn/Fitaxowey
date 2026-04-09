@@ -1,4 +1,9 @@
 #+title: Schedule
 
-* TODO Setup our DOCKER Container on our repo (Fitaxowey).
-SCHEDULED: <2026-04-02 Thu>
+* DONE Setup our DOCKER Container on our repo (Fitaxowey).
+CLOSED: [2026-04-07 Tue 21:42] SCHEDULED: <2026-04-02 Thu>
+* TODO LP Configure Frank Tailscale
+* TODO Reach out to {Person from Frank's Job}
+* TODO Figure out a project to finish to completion
+* TODO Explore DockerHub
+* TODO Figure out consistent meeting schedule and time

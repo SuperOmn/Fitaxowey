@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fitaxowey — Board</title>
+
+  <!-- FullCalendar v6 -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3350;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --text: #e8eaf6;
+      --text-dim: #7b80a0;
+      --shadow: 0 4px 24px rgba(0,0,0,0.45);
+      --radius: 12px;
+      --col-w: 320px;
+      --header-h: 65px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex-shrink: 0;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .tab {
+      padding: 6px 20px;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-dim);
+      transition: color .15s, background .15s;
+      letter-spacing: 0.03em;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .tab:not(.active):hover { color: var(--text); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .date-badge {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      background: var(--surface2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-new {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+    .btn-new:hover { opacity: .85; }
+
+    /* ── Views ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── Board Layout ── */
+    #view-board {
+      display: none;
+    }
+    #view-board.active {
+      display: flex;
+      gap: 20px;
+      padding: 28px 32px;
+      overflow-x: auto;
+      min-height: calc(100vh - var(--header-h));
+      align-items: flex-start;
+    }
+
+    /* ── Column ── */
+    .column {
+      flex: 0 0 var(--col-w);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 110px);
+    }
+
+    .col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .col-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot-backlog  { background: #7b80a0; }
+    .dot-progress { background: #ffd166; }
+    .dot-done     { background: var(--accent3); }
+
+    .col-count {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .col-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .col-body.drag-over {
+      background: rgba(108,99,255,0.07);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 14px 10px;
+      cursor: grab;
+      transition: box-shadow .15s, transform .15s;
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    .card.dragging { opacity: .35; cursor: grabbing; }
+
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      padding-right: 22px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-lp    { background: rgba(61,90,254,.22); color: #8fa4ff; border: 1px solid rgba(61,90,254,.38); }
+    .tag-frank { background: rgba(255,109,0,.18);  color: #ffb06b; border: 1px solid rgba(255,109,0,.32); }
+    .tag-both  { background: rgba(108,99,255,.18); color: #b8b3ff; border: 1px solid rgba(108,99,255,.32); }
+
+    .card-date {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    .card-delete {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 20px; height: 20px;
+      border: none; background: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem;
+      opacity: 0;
+      transition: opacity .15s, color .15s;
+    }
+    .card:hover .card-delete { opacity: 1; }
+    .card-delete:hover { color: var(--accent2); }
+
+    .card[data-priority="high"]::before {
+      content: ''; position: absolute;
+      left: 0; top: 8px; bottom: 8px;
+      width: 3px; background: var(--accent2);
+      border-radius: 0 2px 2px 0;
+    }
+    .card[data-priority="medium"]::before {
+      content: ''; position: absolute;
+      left: 0; top: 8px; bottom: 8px;
+      width: 3px; background: #ffd166;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ── Calendar View ── */
+    #view-calendar {
+      padding: 28px 32px;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    #calendar-el {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    /* ── FullCalendar theme overrides ── */
+    .fc {
+      --fc-border-color: var(--border);
+      --fc-daygrid-event-dot-width: 8px;
+      --fc-today-bg-color: rgba(108,99,255,0.1);
+      --fc-neutral-bg-color: var(--surface2);
+      --fc-page-bg-color: transparent;
+      --fc-event-bg-color: var(--accent);
+      --fc-event-border-color: transparent;
+      --fc-event-text-color: #fff;
+      --fc-button-bg-color: var(--surface2);
+      --fc-button-border-color: var(--border);
+      --fc-button-text-color: var(--text);
+      --fc-button-hover-bg-color: var(--border);
+      --fc-button-hover-border-color: var(--border);
+      --fc-button-active-bg-color: var(--accent);
+      --fc-button-active-border-color: var(--accent);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+
+    .fc .fc-toolbar-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .fc .fc-col-header-cell-cushion,
+    .fc .fc-daygrid-day-number {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .fc .fc-button {
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      text-transform: capitalize;
+      box-shadow: none !important;
+    }
+
+    .fc .fc-button:focus { outline: none; box-shadow: none; }
+
+    .fc-event {
+      border-radius: 5px !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      padding: 2px 6px !important;
+      cursor: pointer !important;
+    }
+
+    .fc-event.ev-lp    { background: #3d5afe !important; }
+    .fc-event.ev-frank { background: #ff6d00 !important; }
+    .fc-event.ev-both  { background: var(--accent) !important; }
+
+    .fc-event.ev-done {
+      opacity: .5;
+      text-decoration: line-through;
+    }
+
+    .fc .fc-daygrid-more-link { color: var(--text-dim); font-size: 0.72rem; }
+    .fc .fc-popover { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
+    .fc .fc-popover-header { background: var(--surface); border-radius: 8px 8px 0 0; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 420px;
+      max-width: 95vw;
+      box-shadow: var(--shadow);
+    }
+
+    .modal h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 0.73rem;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.88rem;
+      padding: 9px 12px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 68px; }
+    select option { background: var(--surface2); }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .btn-cancel:hover { color: var(--text); }
+
+    .btn-save {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 22px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-save:hover { opacity: .85; }
+
+    /* ── Event detail popover ── */
+    .ev-popup {
+      display: none;
+      position: fixed;
+      z-index: 400;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      min-width: 220px;
+      max-width: 280px;
+      box-shadow: var(--shadow);
+      pointer-events: auto;
+    }
+    .ev-popup.open { display: block; }
+    .ev-popup-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+    .ev-popup-meta  { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.6; }
+    .ev-popup-actions { display: flex; gap: 8px; }
+    .ev-popup-btn {
+      flex: 1;
+      padding: 6px 0;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-dim);
+      transition: color .15s;
+      text-align: center;
+    }
+    .ev-popup-btn:hover { color: var(--text); }
+    .ev-popup-btn.danger:hover { color: var(--accent2); border-color: var(--accent2); }
+
+    /* ── Empty ── */
+    .empty-col {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    /* ── Scrollbars ── */
+    .col-body::-webkit-scrollbar { width: 4px; }
+    .col-body::-webkit-scrollbar-track { background: transparent; }
+    .col-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Calendar legend ── */
+    .cal-legend {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    .cal-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .cal-legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+    }
+    .cal-legend-tip {
+      margin-left: auto;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">Fitaxowey</div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('board')">Board</button>
+    <button class="tab" onclick="switchTab('calendar')">Calendar</button>
+  </div>
+
+  <div class="header-right">
+    <span class="date-badge" id="dateDisplay"></span>
+    <button class="btn-new" onclick="openModal()">+ New Task</button>
+  </div>
+</header>
+
+<!-- Board View -->
+<div id="view-board" class="active">
+  <div class="column" id="col-backlog">
+    <div class="col-header">
+      <div class="col-title"><span class="col-dot dot-backlog"></span>Backlog</div>
+      <span class="col-count" id="count-backlog">0</span>
+    </div>
+    <div class="col-body" id="body-backlog" data-col="backlog"
+      ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="onDragLeave(event)">
+    </div>
+  </div>
+
+  <div class="column" id="col-progress">
+    <div class="col-header">
+      <div class="col-title"><span class="col-dot dot-progress"></span>In Progress</div>
+      <span class="col-count" id="count-progress">0</span>
+    </div>
+    <div class="col-body" id="body-progress" data-col="progress"
+      ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="onDragLeave(event)">
+    </div>
+  </div>
+
+  <div class="column" id="col-done">
+    <div class="col-header">
+      <div class="col-title"><span class="col-dot dot-done"></span>Done</div>
+      <span class="col-count" id="count-done">0</span>
+    </div>
+    <div class="col-body" id="body-done" data-col="done"
+      ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="onDragLeave(event)">
+    </div>
+  </div>
+</div>
+
+<!-- Calendar View -->
+<div id="view-calendar" class="view">
+  <div class="cal-legend">
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#3d5afe"></div>LP</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#ff6d00"></div>Frank</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#6c63ff"></div>Both</div>
+    <span class="cal-legend-tip">Click a date to add a task &nbsp;·&nbsp; Click an event for details</span>
+  </div>
+  <div id="calendar-el"></div>
+</div>
+
+<!-- New Task Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalIfOutside(event)">
+  <div class="modal">
+    <h2 id="modalTitle">New Task</h2>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="fTitle" placeholder="What needs to get done?" />
+    </div>
+    <div class="form-group">
+      <label>Assignee</label>
+      <select id="fAssignee">
+        <option value="lp">LP</option>
+        <option value="frank">Frank</option>
+        <option value="both">Both</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Priority</label>
+      <select id="fPriority">
+        <option value="none">None</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Column</label>
+      <select id="fColumn">
+        <option value="backlog">Backlog</option>
+        <option value="progress">In Progress</option>
+        <option value="done">Done</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Due Date (optional)</label>
+      <input type="date" id="fDate" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" id="btnSave" onclick="saveTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event detail popup -->
+<div class="ev-popup" id="evPopup">
+  <div class="ev-popup-title" id="evPopupTitle"></div>
+  <div class="ev-popup-meta" id="evPopupMeta"></div>
+  <div class="ev-popup-actions">
+    <div class="ev-popup-btn" id="evPopupEdit" onclick="editFromPopup()">Edit</div>
+    <div class="ev-popup-btn danger" id="evPopupDelete" onclick="deleteFromPopup()">Delete</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+
+const STORAGE_KEY = 'fitaxowey_board_v1';
+
+const DEFAULT_TASKS = [
+  { id: uid(), title: 'Configure Frank Tailscale',               assignee: 'lp',    priority: 'high',   column: 'backlog', date: '' },
+  { id: uid(), title: "Reach out to person from Frank's Job",    assignee: 'frank', priority: 'medium', column: 'backlog', date: '' },
+  { id: uid(), title: 'Figure out a project to finish end-to-end', assignee: 'both', priority: 'high',  column: 'backlog', date: '' },
+  { id: uid(), title: 'Explore DockerHub',                       assignee: 'both',  priority: 'none',   column: 'backlog', date: '' },
+  { id: uid(), title: 'Lock in consistent meeting schedule',     assignee: 'both',  priority: 'medium', column: 'backlog', date: '' },
+  { id: uid(), title: 'Setup Docker Container on Fitaxowey repo', assignee: 'both', priority: 'none',   column: 'done',   date: '2026-04-07' },
+];
+
+function uid() { return Math.random().toString(36).slice(2, 11); }
+
+function loadTasks() {
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; }
+  catch { return null; }
+}
+
+function saveTasks() { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); }
+
+let tasks = loadTasks() || DEFAULT_TASKS;
+
+// ═══════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════
+
+let calendarInstance = null;
+let activeTab = 'board';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+
+  document.getElementById('view-board').classList.toggle('active', tab === 'board');
+  document.getElementById('view-calendar').classList.toggle('active', tab === 'calendar');
+
+  if (tab === 'calendar') {
+    if (!calendarInstance) initCalendar();
+    else refreshCalendar();
+  }
+  closeEvPopup();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOARD RENDER
+// ═══════════════════════════════════════════════════════════
+
+function renderBoard() {
+  ['backlog','progress','done'].forEach(col => {
+    const body = document.getElementById('body-' + col);
+    const colTasks = tasks.filter(t => t.column === col);
+    body.innerHTML = '';
+    if (!colTasks.length) {
+      body.innerHTML = '<div class="empty-col">No tasks here</div>';
+    } else {
+      colTasks.forEach(t => body.appendChild(makeCard(t)));
+    }
+    document.getElementById('count-' + col).textContent = colTasks.length;
+  });
+}
+
+function makeCard(task) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.id = task.id;
+  card.dataset.priority = task.priority;
+  card.draggable = true;
+
+  const tagClass = { lp: 'tag-lp', frank: 'tag-frank', both: 'tag-both' }[task.assignee];
+  const tagLabel = { lp: 'LP', frank: 'Frank', both: 'Both' }[task.assignee];
+  const dateStr  = task.date ? fmtDate(task.date) : '';
+
+  card.innerHTML = `
+    <button class="card-delete" onclick="deleteTask('${task.id}')" title="Remove">✕</button>
+    <div class="card-title">${esc(task.title)}</div>
+    <div class="card-meta">
+      <span class="tag ${tagClass}">${tagLabel}</span>
+      ${task.priority !== 'none' ? `<span class="tag" style="background:transparent;color:var(--text-dim);border:1px solid var(--border)">${cap(task.priority)}</span>` : ''}
+      ${dateStr ? `<span class="card-date">${dateStr}</span>` : ''}
+    </div>`;
+
+  card.addEventListener('dragstart', onDragStart);
+  card.addEventListener('dragend',   onDragEnd);
+  return card;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAG & DROP
+// ═══════════════════════════════════════════════════════════
+
+let dragId = null;
+
+function onDragStart(e) {
+  dragId = e.currentTarget.dataset.id;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e) { e.currentTarget.classList.remove('dragging'); }
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const col = e.currentTarget.dataset.col;
+  if (!dragId || !col) return;
+  const task = tasks.find(t => t.id === dragId);
+  if (task) { task.column = col; saveTasks(); renderBoard(); if (calendarInstance) refreshCalendar(); }
+  dragId = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL — shared between board & calendar
+// ═══════════════════════════════════════════════════════════
+
+let editingId = null;
+
+function openModal(prefillDate = '', prefillId = null) {
+  editingId = prefillId;
+  const isEdit = !!prefillId;
+  document.getElementById('modalTitle').textContent = isEdit ? 'Edit Task' : 'New Task';
+  document.getElementById('btnSave').textContent = isEdit ? 'Save Changes' : 'Add Task';
+  closeEvPopup();
+
+  if (isEdit) {
+    const t = tasks.find(x => x.id === prefillId);
+    document.getElementById('fTitle').value    = t.title;
+    document.getElementById('fAssignee').value = t.assignee;
+    document.getElementById('fPriority').value = t.priority;
+    document.getElementById('fColumn').value   = t.column;
+    document.getElementById('fDate').value     = t.date;
+  } else {
+    document.getElementById('fTitle').value    = '';
+    document.getElementById('fAssignee').value = 'lp';
+    document.getElementById('fPriority').value = 'none';
+    document.getElementById('fColumn').value   = 'backlog';
+    document.getElementById('fDate').value     = prefillDate;
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('fTitle').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingId = null;
+}
+
+function closeModalIfOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveTask() {
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) { document.getElementById('fTitle').focus(); return; }
+
+  if (editingId) {
+    const task = tasks.find(t => t.id === editingId);
+    task.title    = title;
+    task.assignee = document.getElementById('fAssignee').value;
+    task.priority = document.getElementById('fPriority').value;
+    task.column   = document.getElementById('fColumn').value;
+    task.date     = document.getElementById('fDate').value;
+  } else {
+    tasks.push({
+      id:       uid(),
+      title,
+      assignee: document.getElementById('fAssignee').value,
+      priority: document.getElementById('fPriority').value,
+      column:   document.getElementById('fColumn').value,
+      date:     document.getElementById('fDate').value,
+    });
+  }
+
+  saveTasks();
+  renderBoard();
+  if (calendarInstance) refreshCalendar();
+  closeModal();
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  renderBoard();
+  if (calendarInstance) refreshCalendar();
+}
+
+// ═══════════════════════════════════════════════════════════
+// FULLCALENDAR
+// ═══════════════════════════════════════════════════════════
+
+function tasksToEvents() {
+  return tasks
+    .filter(t => t.date)
+    .map(t => ({
+      id:        t.id,
+      title:     t.title,
+      start:     t.date,
+      allDay:    true,
+      classNames: [
+        'ev-' + t.assignee,
+        t.column === 'done' ? 'ev-done' : '',
+      ],
+      extendedProps: { taskId: t.id },
+    }));
+}
+
+function initCalendar() {
+  const el = document.getElementById('calendar-el');
+  calendarInstance = new FullCalendar.Calendar(el, {
+    initialView:  'dayGridMonth',
+    headerToolbar: {
+      left:   'prev,next today',
+      center: 'title',
+      right:  'dayGridMonth,dayGridWeek',
+    },
+    events: tasksToEvents(),
+    height: 'auto',
+    fixedWeekCount: false,
+    dayMaxEvents: 3,
+
+    // Click a blank date → open new task modal pre-filled with that date
+    dateClick(info) {
+      openModal(info.dateStr);
+    },
+
+    // Click an event → show detail popup
+    eventClick(info) {
+      info.jsEvent.stopPropagation();
+      showEvPopup(info.event.extendedProps.taskId, info.el);
+    },
+  });
+  calendarInstance.render();
+}
+
+function refreshCalendar() {
+  if (!calendarInstance) return;
+  calendarInstance.removeAllEvents();
+  tasksToEvents().forEach(ev => calendarInstance.addEvent(ev));
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENT DETAIL POPUP
+// ═══════════════════════════════════════════════════════════
+
+let popupTaskId = null;
+
+function showEvPopup(taskId, anchorEl) {
+  popupTaskId = taskId;
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+
+  const popup = document.getElementById('evPopup');
+  document.getElementById('evPopupTitle').textContent = task.title;
+  document.getElementById('evPopupMeta').innerHTML =
+    `Assignee: <strong>${cap(task.assignee)}</strong><br>` +
+    `Column: <strong>${cap(task.column)}</strong><br>` +
+    `Priority: <strong>${task.priority === 'none' ? '—' : cap(task.priority)}</strong><br>` +
+    `Due: <strong>${task.date ? fmtDate(task.date) : '—'}</strong>`;
+
+  // Position near the clicked event
+  const rect = anchorEl.getBoundingClientRect();
+  const popW = 260, popH = 160;
+  let left = rect.right + 8;
+  let top  = rect.top;
+  if (left + popW > window.innerWidth - 12) left = rect.left - popW - 8;
+  if (top + popH > window.innerHeight - 12) top = window.innerHeight - popH - 12;
+  popup.style.left = left + 'px';
+  popup.style.top  = top  + 'px';
+  popup.classList.add('open');
+}
+
+function closeEvPopup() {
+  document.getElementById('evPopup').classList.remove('open');
+  popupTaskId = null;
+}
+
+function editFromPopup() {
+  const id = popupTaskId;
+  closeEvPopup();
+  openModal('', id);
+}
+
+function deleteFromPopup() {
+  if (!popupTaskId) return;
+  deleteTask(popupTaskId);
+  closeEvPopup();
+}
+
+document.addEventListener('click', e => {
+  const popup = document.getElementById('evPopup');
+  if (popup.classList.contains('open') && !popup.contains(e.target)) closeEvPopup();
+});
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+
+function fmtDate(iso) {
+  const [, m, d] = iso.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[+m - 1]} ${+d}`;
+}
+
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeEvPopup(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === '1') { e.preventDefault(); switchTab('board'); }
+  if ((e.metaKey || e.ctrlKey) && e.key === '2') { e.preventDefault(); switchTab('calendar'); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+
+document.getElementById('dateDisplay').textContent =
+  new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+renderBoard();
+</script>
+</body>
+</html>

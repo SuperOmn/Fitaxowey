@@ -1,0 +1,13 @@
+#+title: Brainstorming Ideas
+Taking ourselves seriously as Founders
+
+*  Lecture Days
+Watching Course videos/ Reading through Course repos like the one last night, and following along/ taking notes
+*  Project Days
+Delegating project tasks and working on project work
+*  DSA/Tools/Workflow&PKM optimization -
+Data Structures & algorithms (Leetcode) and Working more through tools and optimization (nvim, Knowledge management scheduling)
+*  Consult/ Mentorship/ Networking days
+Speak with...
+- Mentors or other ambitious invidiuals about technologies we delploy, are using
+

@@ -1,0 +1,23 @@
+#+title: Daily Notes
+* 
+:LOGBOOK:
+CLOCK: [2026-04-08 Wed 22:20]--[2026-04-08 Wed 23:28] =>  0:08
+:END:
+
+* Day 0 <2026-03-31 Tue>
+- LP taught basic Vim motions
+- Created [[https://github.com/SuperOmn/Fitaxowey.git][Fitaxowey]] repo
+* Day 1 <2026-04-02 Thu>
+- LP taught FP more Vim motions
+- Installed nvim on Frank PC
+* Day 2 <2026-04-07 Tue>
+- LP & FL cloned [[https://github.com/docker-archive-public/docker.labs][Learn docker]] repo to the Fitaxowey repo
+- LP Created first Docker container w/o AI assistance
+
+* Day 3 <2026-04-08 Wed>
+LP...
+- Expanded upon repo
+- Began this log
+- Brainstormed a system to continue meetings
+- Generated a calendar layout based off of org mode call
+- Removed some files
