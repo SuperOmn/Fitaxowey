@@ -21,3 +21,7 @@ LP...
 - Brainstormed a system to continue meetings
 - Generated a calendar layout based off of org mode call
 - Removed some files
+
+*  Day 4 <2026-04-14 Tue>
+BMS, FL, LJP
+- Talked about Docker uses [[file:2026_04_14_18_59_1900_ljp_fl_mtng_nts.org][see notes]]

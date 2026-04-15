@@ -1,0 +1,41 @@
+#+title:  1900 Ljp Fl Mtng Nts
+* @Bowen-Moore_Sean
+[[https://www.wooflers.net/][wooflers.net]] runs in
+#+begin_src
+Docker is JUST the dependencies
+- @Bowen-Moore_Sean
+#+end_src
+
+#+begin_src
+(I wouldn't have AI do something that I couldn't already do or use technologies that I couldn't explain to a person inquiring about how my app works)
+- @Bowen-Moore_Sean
+#+end_src
+* Questions
+** What ways have you used Docker to grow as an engineer? Create?
+** How to think about how to use Docker?
+*** Web Servers
+*** API-servers
+*** [[https://securityonionsolutions.com/][SecurityOnions]]
+- Many containers, one network.
+- Free
+*** Building "Disposable" servers
+** AI is here, best way to learn about it and not let it consume you?
+** Project ideas?
+** Startup ideas?
+* Notes
+** PORTAINER -> GUI container management
+** NGINX Proxy Manager -> Forwarding port names
+** Traefik -> GH
+Scaling
+
+** Contains
+* Vocab
+** Container Bleed
+** DNS
+** Image
+** Load Balancing
+** Loose Coupling
+** Volume
+containers can point to them
+** NAT - Network ?? Transmission
+* Summary

@@ -4,6 +4,9 @@
 CLOSED: [2026-04-07 Tue 21:42] SCHEDULED: <2026-04-02 Thu>
 * TODO LP Configure Frank Tailscale
 * TODO Reach out to {Person from Frank's Job}
+SCHEDULED: <2026-04-14 Tue>
+Meeting notes
+1900_ljp_fl_mtng_nts.org
 * TODO Figure out a project to finish to completion
 * TODO Explore DockerHub
 * TODO Figure out consistent meeting schedule and time
